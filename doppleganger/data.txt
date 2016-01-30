@@ -1,0 +1,9 @@
+Addr: (Size) Desc
+
+8C83: (1) Blue's room
+
+8D00: (4) ?
+8D04: (1) Green's room
+8D05: (2) Green's onscreen position
+8D07: (1) ?
+8D08: (2) Green's sprite image address

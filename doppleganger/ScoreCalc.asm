@@ -1,0 +1,136 @@
+;Score calculation
+;=================
+ORG &04CB
+
+visitedrooms EQU &0B65	;Room visited flags array, 25 bytes
+
+NOP				;Useless
+ADD B			;Useless
+
+; +25 for visiting all rooms
+LD HL,visitedrooms
+LD B,25			;There are 25 rooms in total
+XOR A			;A=0
+LD C,A			;C=0
+.loop1
+LD A,(HL)		;Read
+AND A
+JR Z,nextroom	;Skip if 0
+INC C
+LD (HL),&00		;Reset
+.nextroom
+INC HL
+DJNZ loop1
+LD B,C			;Keep score in B
+
+; +3 for opening blue door
+LD C,&80
+LD A,(&9B79)
+CP C
+JR NZ,L0508
+INC B
+INC B
+INC B
+
+; +5
+LD A,(&9BAC)
+CP C
+JR NZ,L0508
+LD A,&05
+ADD B
+
+; +8
+LD B,A
+LD A,(&9B96)
+CP C
+JR NZ,L0508
+LD A,&08
+ADD B
+LD B,A
+
+; +14
+LD A,(&9B6F)
+CP C
+JR NZ,L0508
+LD A,&D
+ADD B
+LD B,A
+.L0508
+LD D,&60
+LD HL,&3B39
+CALL &0B7E
+LD A,E
+AND A
+JR Z,L051F
+LD HL,&19D6
+.L0517
+INC (HL)
+DEC A
+JR NZ,L0517
+LD A,E
+ADD A
+ADD B
+LD B,A
+.L051F
+LD D,&61
+LD HL,&3B33
+CALL &0B7E
+LD A,E
+AND A
+JR Z,L053A
+LD HL,&19E3
+.L052E
+INC (HL)
+DEC A
+JR NZ,L052E
+LD A,B
+LD C,&0005
+.L0535
+ADD C
+DEC E
+JR NZ,L0535
+LD B,A
+.L053A
+LD D,&0062
+LD HL,&3B2D
+CALL &0B7E
+LD A,E
+AND A
+JR Z,L0555
+LD HL,&19EE
+.L0549
+INC (HL)
+DEC A
+JR NZ,L0549
+LD A,B
+LD C,&0009
+.L0550
+ADD C
+DEC E
+JR NZ,L0550
+LD B,A
+.L0555
+LD A,B
+LD C,&000A
+LD E,&0000
+.L055A
+SUB C
+JR C,L0560
+INC E
+JR L055A
+.L0560
+LD A,&0030
+ADD E
+LD (&19C8),A
+XOR A
+LD C,&000A
+.L0569
+ADD C
+DEC E
+JR NZ,L0569
+LD C,A
+LD A,B
+SUB C
+ADD &0030
+LD (&19C9),A
+RET
